@@ -3,7 +3,7 @@
 
 import requests
 
-from odoo import models, api
+from openerp import models, api
 
 
 class ResUsers(models.Model):
@@ -15,11 +15,11 @@ class ResUsers(models.Model):
             return requests.get(
                 endpoint, headers={"Authorization": "Bearer {}".format(access_token)}
             ).json()
-        return super()._auth_oauth_rpc(endpoint, access_token)
+        return super(ResUsers, self)._auth_oauth_rpc(endpoint, access_token)
 
     @api.model
     def _generate_signup_values(self, provider, validation, params):
-        values = super()._generate_signup_values(provider, validation, params)
+        values = super(ResUsers, self)._generate_signup_values(provider, validation, params)
         values["email"] = validation.get("userPrincipalName", values["email"])
         values["login"] = values["email"]
         values["name"] = validation.get("displayName", values["email"])

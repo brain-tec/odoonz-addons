@@ -2,12 +2,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
-    "name": "Accounting Journal Lock Policy",
-    "summary": "Specify journal specific lock policies",
-    "version": "12.0.1.1.0",
+    "name": "Microsoft Graph Oauth Authentication",
+    "version": "9.0.1.0.0",
     "license": "AGPL-3",
     "author": "Open For Small Business Ltd",
     "website": "https://o4sb.com",
-    "depends": ["account"],
-    "data": ["views/account_journal.xml"],
+    "summary": "Allow users to login using Microsoft Graph.",
+    "depends": ["auth_oauth"],
 }
