@@ -31,15 +31,18 @@ class MrpBom(models.Model):
                     func = getattr(self, f"_explode_{xform.technical_name}")
                 except AttributeError:
                     _logger.error(
-                        _("No function found with name _explode_%s")
-                        % xform.technical_name
+                        _(
+                            "No function found with name _explode_%(name)s",
+                            name=xform.technical_name,
+                        )
                     )
                 else:
                     bom_line, line_fields = func(product, bom_line, line_fields)
                 if not bom_line:
                     # Its deleted so nothing to xform
                     break
-            bom_line and lines_done.append((bom_line, line_fields))
+            if bom_line:
+                lines_done.append((bom_line, line_fields))
         return boms_done, lines_done
 
     def _compute_matched_product(self, orig_product, bom_line):
@@ -75,13 +78,11 @@ class MrpBom(models.Model):
             raise ValidationError(
                 _(
                     "The BoM Line %(bom_line)s in BoM %(bom)s is matching too many "
-                    "products.  Expected <= 1 and received:\n%(products)s"
+                    "products.  Expected <= 1 and received:\n%(products)s",
+                    bom_line=bom_line.product_tmpl_id.name,
+                    bom=bom_line.bom_id.display_name,
+                    products="\n".join(names),
                 )
-                % {
-                    "bom_line": bom_line.product_tmpl_id.name,
-                    "bom": bom_line.bom_id.display_name,
-                    "products": "\n".join(names),
-                }
             )
         elif not product:
             product = bom_line.product_id
