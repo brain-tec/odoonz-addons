@@ -8,24 +8,20 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="account.view_partner_property_form" />
         <field name="arch" type="xml">
-            <xpath expr="//group[@name='sale']" position="inside">
+            <xpath expr="//field[@name='invoice_sending_method']" position="before">
                 <field name="enforce_cutoff" groups="account.group_account_manager" />
+                <label string="Redate Invoices" for="days" />
                 <div
-                    colspan="2"
                     name="lock_policy"
                     invisible="not enforce_cutoff"
                     groups="account.group_account_manager"
                 >
-                    Redate invoices
-                    <field name="days" class="oe_inline" widget="integer" />
-                    <label string=" " for="day_type" />
+                    <field name="days" class="oe_inline" />
                     <field
                         name="day_type"
                         class="oe_inline"
                         required="enforce_cutoff"
                     />
-                    <label string=" " for="day_type" />
-                    <label string="after" for="cutoff_type" />
                     <field
                         name="cutoff_type"
                         class="oe_inline"
