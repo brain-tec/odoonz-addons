@@ -74,7 +74,7 @@ class IrRule(models.Model):
             dom = (
                 safe_eval(rule.domain_force, eval_context) if rule.domain_force else []
             )
-            dom = expression.normalize_domain(dom)
+            dom = Domain(dom)
             if rule.groups & user_groups:
                 important_domains.append(dom)
 

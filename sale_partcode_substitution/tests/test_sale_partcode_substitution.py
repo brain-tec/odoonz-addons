@@ -59,7 +59,7 @@ class TestSaleSubst(TransactionCase):
                         "name": cls.productA.name,
                         "product_id": cls.productA.id,
                         "product_uom_qty": randint(1, 10),
-                        "product_uom": cls.productA.uom_id.id,
+                        "product_uom_id": cls.productA.uom_id.id,
                         "price_unit": randint(1, 100) / 2.1,
                         "discount": random() * 100.0,
                     },
@@ -99,6 +99,9 @@ class TestSaleSubst(TransactionCase):
         self.assertNotEqual(self.productB.id, self.so.order_line[0].product_id.id)
         self.so.order_line[0].technical_price_unit = self.productA.list_price
         self.so.order_line[0].price_unit = self.productA.list_price
+        # When not keeping manual pricing, we expect the price unit to be
+        # reset to the new product's list price.
+        self.scr.keep_manual_pricing = False
         self.scr.from_code = "A"
         self.scr.to_code = "B"
         self.scr.change_products_partcode()
