@@ -83,9 +83,17 @@ class ProductProduct(models.Model):
     _inherit = "product.product"
 
     @staticmethod
-    def _get_price_changes_ordered(change_lines, fld):
+    def _get_price_changes_ordered(change_lines):
+        """Price history newest first, always ordered on ``effective_date``.
+
+        Ordering must not use ``partner_effective_date``: an implementation
+        delay postpones when a change becomes eligible for a partner, but the
+        change still sits where it always did in the history. Ordering on the
+        delayed date would let a delayed change outrank one made after it, so
+        the delayed partner would stay on a superseded price for good.
+        """
         return change_lines.filtered(lambda s: s.state in ("live", "future")).sorted(
-            key=lambda r: r.price_change_id[fld], reverse=True
+            key=lambda r: r.price_change_id.effective_date, reverse=True
         )
 
     @api.depends("product_template_attribute_value_ids.price_extra")
@@ -117,8 +125,7 @@ class ProductProduct(models.Model):
                 for change in self._get_price_changes_ordered(
                     value.with_context(
                         partner_id=commercial_partner_id
-                    ).price_change_line_ids,
-                    fld,
+                    ).price_change_line_ids
                 ):
                     if change.price_change_id[fld] <= effective_date:
                         price_extra += change.price_extra
@@ -165,8 +172,7 @@ class ProductProduct(models.Model):
             for change in self._get_price_changes_ordered(
                 product.with_context(
                     partner_id=commercial_partner_id
-                ).price_change_line_ids,
-                fld,
+                ).price_change_line_ids
             ):
                 if change.price_change_id[fld] <= effective_date:
                     list_price = change.list_price
