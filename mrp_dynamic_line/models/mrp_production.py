@@ -64,11 +64,12 @@ class MrpProduction(models.Model):
         update_info = []
 
         # Re-explode BOM with new qty as lines may be added or removed
-        self.product_qty = float_round(
+        # Local only: core needs product_qty unchanged until _update_finished_moves
+        new_product_qty = float_round(
             self.product_qty * factor, precision_rounding=self.product_uom_id.rounding
         )
         _bom, lines_done = self.bom_id.explode(
-            self.product_id, self.product_qty, picking_type=self.picking_type_id
+            self.product_id, new_product_qty, picking_type=self.picking_type_id
         )
         lines_done = {line[0]: line[1] for line in lines_done}
 
