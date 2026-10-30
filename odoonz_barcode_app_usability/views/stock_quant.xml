@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="quant_search_view" model="ir.ui.view">
+        <field name="name">stock.quant.search (in odoonz_barcode_app_usability)</field>
+        <field name="inherit_id" ref="stock.quant_search_view" />
+        <field name="model">stock.quant</field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='to_apply']" position="after">
+                <filter
+                    name="to_review"
+                    string="To Review"
+                    domain="[('awaiting_review', '=', True)]"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
